@@ -13,7 +13,7 @@ sleep 2
 if [ $? -eq 0 ]; then
     # Check it has unmounted
     IMAGE=$(curl -s -k -u ''"${BMC_USERNAME}"'':''"${BMC_PASSWORD}"'' https://${BMC_ENDPOINT}/redfish/v1/Managers/1/VM1/CD1)
-    if [$IMAGE = ""]; then
+    if [[ $IMAGE == "" ]]; then
       exit 0
     else
       exit 1
