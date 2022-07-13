@@ -17,18 +17,21 @@ curl -X POST -s -k -u ''"${BMC_USERNAME}"'':''"${BMC_PASSWORD}"'' https://${BMC_
 
 # Configure image
 sleep 2
-echo
-curl -X PATCH -s -k -u ''"${BMC_USERNAME}"'':''"${BMC_PASSWORD}"'' https://${BMC_ENDPOINT}/redfish/v1/Managers/1/VM1/CfgCD --data '{"Host": "'${ISO_URL}'","Path": "'${ISO_PATH}'"}'
+echo "patching iso url and path"
+curl -X PATCH  -k -u ''"${BMC_USERNAME}"'':''"${BMC_PASSWORD}"'' https://${BMC_ENDPOINT}/redfish/v1/Managers/1/VM1/CfgCD --data '{"Host": "'${ISO_URL}'","Path": "'${ISO_PATH}'"}'
 if [ $? -eq 0 ]; then
   # Mount image
   sleep 3
+  echo "mount  image"
+  curl -X POST  -k -u ''"${BMC_USERNAME}"'':''"${BMC_PASSWORD}"'' https://${BMC_ENDPOINT}/redfish/v1/Managers/1/VM1/CfgCD/Actions/IsoConfig.Mount -d ""
+  ## simple command to force next condition is oka
   echo
-  curl -X POST -s -k -u ''"${BMC_USERNAME}"'':''"${BMC_PASSWORD}"'' https://${BMC_ENDPOINT}/redfish/v1/Managers/1/VM1/CfgCD/Actions/IsoConfig.Mount -d ""
   if [ $? -eq 0 ]; then
     # Check image is mounted
-    IMAGE=$(curl -s -k -u ''"${BMC_USERNAME}"'':''"${BMC_PASSWORD}"'' https://${BMC_ENDPOINT}/redfish/v1/Managers/1/VM1/CD1)
-    echo
+    IMAGE=$(curl  -k -u ''"${BMC_USERNAME}"'':''"${BMC_PASSWORD}"'' https://${BMC_ENDPOINT}/redfish/v1/Managers/1/VM1/CD1)
+    echo "check image is mounted"
     echo $IMAGE
+    exit 0
     if `echo $IMAGE | egrep -q ${ISO_PATH}`; then
       exit 0
     else
