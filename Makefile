@@ -1,5 +1,5 @@
 REGISTRY ?= quay.io
-IMAGE_NAMESPACE ?= mavazque
+IMAGE_NAMESPACE ?= jgato
 IMAGE_NAME ?= fakefish
 IMAGE_URL ?= $(REGISTRY)/$(IMAGE_NAMESPACE)/$(IMAGE_NAME)
 TAG ?= latest
@@ -13,6 +13,10 @@ build-dell:
 
 build-custom: pre-reqs
 	podman build . -f custom_scripts/Containerfile -t ${IMAGE_URL}:${TAG}
+
+build-supermicro:
+	podman build . -f supermicro_scripts/Containerfile -t ${IMAGE_URL}-supermicro:${TAG}
+
 
 .SILENT:
 pre-reqs:
