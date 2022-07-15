@@ -8,16 +8,16 @@
 #### BMC_PASSWORD - Has the password configured in the BMH/InstallConfig and that is used to access BMC_ENDPOINT
 
 # Disconnect image
-echo "Disconnect image"
-curl -X POST  -k -u ''"${BMC_USERNAME}"'':''"${BMC_PASSWORD}"'' https://${BMC_ENDPOINT}/redfish/v1/Managers/1/VM1/CfgCD/Actions/IsoConfig.UnMount -d ""
+echo
+curl -s -X POST  -k -u ''"${BMC_USERNAME}"'':''"${BMC_PASSWORD}"'' https://${BMC_ENDPOINT}/redfish/v1/Managers/1/VM1/CfgCD/Actions/IsoConfig.UnMount -d ""
 sleep 2
 if [ $? -eq 0 ]; then
     # Check it has unmounted
-    echo "check if it is disconnected"
-    IMAGE=$(curl  -k -u ''"${BMC_USERNAME}"'':''"${BMC_PASSWORD}"'' https://${BMC_ENDPOINT}/redfish/v1/Managers/1/VM1/CD1)
+    IMAGE=$(curl -s -k -u ''"${BMC_USERNAME}"'':''"${BMC_PASSWORD}"'' https://${BMC_ENDPOINT}/redfish/v1/Managers/1/VM1/CD1)
+    # unmount not working on this server, so we fake it, to continue as it worked
+    # at least it will proceed to mount the iso
     IMAGE=""
     if [ -z "$IMAGE" ]; then
-      echo "disconnected cd and oka"
       exit 0
     else
       exit 1
