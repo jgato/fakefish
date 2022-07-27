@@ -14,9 +14,6 @@ sleep 2
 if [ $? -eq 0 ]; then
     # Check it has unmounted
     IMAGE=$(curl -s -k -u ''"${BMC_USERNAME}"'':''"${BMC_PASSWORD}"'' https://${BMC_ENDPOINT}/redfish/v1/Managers/1/VM1/CD1)
-    # unmount not working on this server, so we fake it, to continue as it worked
-    # at least it will proceed to mount the iso
-    IMAGE=""
     if [ -z "$IMAGE" ]; then
       exit 0
     else
